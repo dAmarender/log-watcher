@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+flask
+watchdog
+websocket-client
+openai
+python-dotenv
+
