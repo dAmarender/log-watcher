@@ -1,0 +1,40 @@
+[
+    {
+      "error": "vault is sealed",
+      "resolution": "→ Use the unseal key to unseal Vault."
+    },
+    {
+      "error": "connection",
+      "resolution": "→ Verify network connectivity and Vault address."
+    },
+    {
+      "error": "timeout",
+      "resolution": "→ Check latency or increase timeout settings."
+    },
+    {
+      "error": "revoked lease",
+      "resolution": "→ Investigate lease revocation and renew token."
+    },
+    {
+      "error": "invalid token",
+      "resolution": "→ Generate a new token or log in again."
+    },
+    {
+      "error": "token expired",
+      "resolution": "→ Generate a new token or refresh the current one."
+    },
+    {
+      "error": "token renewal failed",
+      "resolution": "→ Investigate token renewal process and retry."
+    },
+    {
+      "error": "token valid",
+      "resolution": "→ Check if the token is still valid and authorized."
+    },
+    {
+      "error": "token revoke",
+      "resolution": "→ This token has been revoked. Generate a new one."
+    }
+  ]
+  
+  

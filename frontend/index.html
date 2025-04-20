@@ -80,6 +80,151 @@
   <script>
     let autoRefresh = true;
     let intervalId = null;
+
+    const errorEl = document.getElementById("errors");
+    const resolutionEl = document.getElementById("resolutions");
+
+    async function fetchLogs() {
+      try {
+        const logsResponse = await fetch("http://localhost:8000/logs?limit=100");
+        const logs = await logsResponse.json();
+        const logEl = document.getElementById("log");
+
+        const isAtBottom = logEl.scrollTop + logEl.clientHeight >= logEl.scrollHeight - 50;
+        logEl.innerText = logs.join("\n");
+
+        if (isAtBottom) {
+          logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        const errors = logs.filter(line =>
+          /error|failed|vault is sealed|revoked lease|root generation initialized|invalid token|token expired|token renewal failed|token valid|token revoke/i.test(line)
+        );
+
+        // Fetch error resolutions from the errors.json file
+        const resolutionsResponse = await fetch("http://localhost:8000/resolutions");
+        const resolutionsData = await resolutionsResponse.json();
+
+        // Display detected errors
+        errorEl.innerText = errors.length ? errors.join("\n") : "✅ No errors found";
+
+        // Map resolutions based on errors
+        const resolutions = errors.map(error => {
+          const matchingResolution = resolutionsData.find(res => error.match(new RegExp(res.error, "i")));
+          return matchingResolution ? matchingResolution.resolution : "→ Investigate the issue manually.";
+        });
+
+        // Display the resolutions
+        resolutionEl.innerText = resolutions.length ? resolutions.join("\n") : "✅ No issues to resolve.";
+      } catch (err) {
+        console.error("Failed to fetch logs or resolutions", err);
+      }
+    }
+
+    function toggleAutoRefresh() {
+      autoRefresh = !autoRefresh;
+      const btn = document.getElementById("toggleBtn");
+      if (autoRefresh) {
+        intervalId = setInterval(fetchLogs, 1000);
+        btn.innerText = "Pause Auto Refresh";
+      } else {
+        clearInterval(intervalId);
+        btn.innerText = "Resume Auto Refresh";
+      }
+    }
+
+    fetchLogs();
+    intervalId = setInterval(fetchLogs, 1000);
+  </script>
+</body>
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vault Log Viewer | LogAssistAI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #6b8758;
+      color: #ffffff;
+      padding: 20px;
+    }
+    h1 {
+      color: #fdfefe;
+      margin: 0;
+    }
+    h2 {
+      margin-bottom: 10px;
+    }
+    .section {
+      margin-top: 60px;
+      margin-bottom: 30px;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: #1e1e1e;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 30vh;
+      overflow-y: auto;
+      border: 1px solid #eff4f2;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: none;
+      background: #f5f8f7;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #00cc70;
+    }
+    .company-name {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #00ff90;
+    }
+  </style>
+</head>
+<body>
+  <div class="company-name">
+    <h1>LogAssistAI</h1>
+  </div>
+
+  <div class="section" style="margin-top: 80px;">
+    <h2>🔄 Live Vault Logs</h2>
+    <pre id="log">Loading...</pre>
+  </div>
+
+  <div class="section">
+    <h2>⚠️ Detected Issues</h2>
+    <pre id="errors">Analyzing logs...</pre>
+  </div>
+
+  <div class="section">
+    <h2>🛠 Suggested Resolutions</h2>
+    <pre id="resolutions">Waiting for issues...</pre>
+  </div>
+
+  <button onclick="fetchLogs()">Refresh Logs</button>
+  <button id="toggleBtn" onclick="toggleAutoRefresh()">Pause Auto Refresh</button>
+
+  <script>
+    let autoRefresh = true;
+    let intervalId = null;
     let socket = new WebSocket("ws://localhost:8000/ws/issues");
 
     const errorEl = document.getElementById("errors");
@@ -169,4 +314,4 @@
     intervalId = setInterval(fetchLogs, 1000);
   </script>
 </body>
-</html>
+</html> -->
