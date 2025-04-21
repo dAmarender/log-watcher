@@ -1,40 +1,118 @@
 [
-    {
-      "error": "vault is sealed",
-      "resolution": "Step 1: export VAULT_ADDR=<Vault ADDR> (e.g., http://127.0.0.1:8200)\nStep 2: vault operator unseal <unseal_key_1>\nStep 3: vault operator unseal <unseal_key_2>\nStep 4: vault operator unseal <unseal_key_3>\nStep 5: Confirm Vault is unsealed using"
-    },
-    {
-      "error": "connection",
-      "resolution": "→ Verify network connectivity and Vault address."
-    },
-    {
-      "error": "timeout",
-      "resolution": "→ Check latency or increase timeout settings."
-    },
-    {
-      "error": "revoked lease",
-      "resolution": "→ Investigate lease revocation and renew token."
-    },
-    {
-      "error": "invalid token",
-      "resolution": "→ Generate a new token or log in again."
-    },
-    {
-      "error": "token expired",
-      "resolution": "→ Generate a new token or refresh the current one."
-    },
-    {
-      "error": "token renewal failed",
-      "resolution": "→ Investigate token renewal process and retry."
-    },
-    {
-      "error": "token valid",
-      "resolution": "→ Check if the token is still valid and authorized."
-    },
-    {
-      "error": "token revoke",
-      "resolution": "→ This token has been revoked. Generate a new one."
-    }
-  ]
+  {
+    "error": "vault is sealed",
+    "resolution": "Step 1: export VAULT_ADDR=<Vault ADDR>\nStep 2: vault operator unseal <unseal_key_1>\nStep 3: vault operator unseal <unseal_key_2>\nStep 4: vault operator unseal <unseal_key_3>\nStep 5: vault status"
+  },
+  {
+    "error": "connection",
+    "resolution": "Step 1: Verify VAULT_ADDR environment variable\nStep 2: Ping the Vault server to check network connectivity\nStep 3: Ensure the Vault server is running on the expected IP/Port\nStep 4: Verify Vault firewall and security group settings"
+  },
+  {
+    "error": "timeout",
+    "resolution": "Step 1: Check if the Vault server is under heavy load or slow to respond\nStep 2: Increase client-side timeout in your configuration (e.g., VAULT_CLIENT_TIMEOUT)\nStep 3: Check network latency to Vault server using tools like ping or traceroute\nStep 4: Adjust Vault server performance (e.g., optimize storage or memory)"
+  },
+  {
+    "error": "revoked lease",
+    "resolution": "Step 1: Identify the lease ID by inspecting the Vault logs\nStep 2: Check if the lease was revoked due to expiration or manual action by running this command\n $ vault token lookup <token> \nStep 3: Re-authenticate to generate a new lease or renew an active lease\nStep 4: If needed, investigate the reason for the revocation in Vault's policy logs"
+  },
+  {
+    "error": "invalid token",
+    "resolution": "Step 1: Verify the token is entered correctly and ensure it is not expired\nStep 2: Run 'vault login' to obtain a new valid token\nStep 3: Ensure that the token has the necessary policies for the required Vault path\nStep 4: Reattempt the Vault operation with the new token"
+  },
+  {
+    "error": "token expired",
+    "resolution": "Step 1: Run 'vault token lookup' to confirm the expiration date\nStep 2: If expired, generate a new token using 'vault login'\nStep 3: Set the VAULT_TOKEN environment variable with the new token and retry\nStep 4: Review the TTL and policies for the token in Vault logs to prevent frequent expiration"
+  },
+  {
+    "error": "token renewal failed",
+    "resolution": "Step 1: Run 'vault token renew' and confirm the output for errors\nStep 2: Check the Vault audit logs to investigate any issues during the renewal process\nStep 3: If renewal continues to fail, obtain a new token using 'vault login' and retry\nStep 4: Ensure the Vault policy supports token renewal"
+  },
+  {
+    "error": "token valid",
+    "resolution": "Step 1: Run 'vault token lookup' to verify token details\nStep 2: Ensure the token is valid for the required Vault path and has the right policies\nStep 3: Check that the token has not been explicitly revoked or expired"
+  },
+  {
+    "error": "token revoke",
+    "resolution": "Step 1: Use 'vault token lookup' to confirm the token status and verify revocation\nStep 2: If revoked, generate a new token using 'vault login'\nStep 3: Reconfigure VAULT_TOKEN and retry the operation"
+  },
+  {
+    "error": "raft snapshot save fails",
+    "resolution": "Step 1: Identify the active Vault node using 'vault operator raft list-peers'\nStep 2: Ensure that the snapshot command is executed on the active leader node\nStep 3: Retry the 'vault operator raft snapshot save' on the active leader node\nStep 4: Investigate disk space or permissions on the node storing the snapshot"
+  },
+  {
+    "error": "raft snapshot exceeds max space",
+    "resolution": "Step 1: Check the 'local_max_space' configuration in Vault's settings\nStep 2: Increase the 'local_max_space' value in Vault's config if necessary\nStep 3: Restart Vault for the changes to take effect\nStep 4: Check for any issues in the underlying storage backend (e.g., insufficient disk space)"
+  },
+  {
+    "error": "raft node not joining cluster",
+    "resolution": "Step 1: Verify the TLS certificates are valid for the joining node\nStep 2: Confirm network connectivity and firewall settings between nodes\nStep 3: Ensure Vault is correctly configured with 'vault operator raft join' using the correct leader node address\nStep 4: Check the Vault logs for more detailed errors during the join process"
+  },
+  {
+    "error": "replication bootstrap failure",
+    "resolution": "Step 1: Ensure that both the primary and secondary clusters are running compatible Vault versions\nStep 2: Verify that the bootstrap token is valid and not expired\nStep 3: Check network connectivity and firewalls between primary and secondary clusters\nStep 4: Ensure Vault on both clusters is configured for replication"
+  },
+  {
+    "error": "replication Merkle sync loop",
+    "resolution": "Step 1: Monitor replication status with 'vault read sys/replication/status'\nStep 2: Check Merkle tree hash discrepancies between clusters\nStep 3: Run 'vault write sys/replication/reindex' to re-sync replication state\nStep 4: Review Vault logs for replication or syncing errors"
+  },
+  {
+    "error": "HA failover not occurring",
+    "resolution": "Step 1: Ensure all standby nodes are healthy and unsealed\nStep 2: Verify that the Vault cluster has quorum to elect a new leader\nStep 3: Check Vault logs for any errors that prevent failover from happening\nStep 4: Manually trigger failover if needed using 'vault operator step-down'"
+  },
+  {
+    "error": "raft cluster out of sync",
+    "resolution": "Step 1: Run 'vault operator raft list-peers' to compare Raft committed and applied indexes\nStep 2: Identify any out-of-sync nodes and check their logs for errors\nStep 3: Restart or rejoin the out-of-sync node using 'vault operator raft join'\nStep 4: Ensure the nodes are not overloaded or facing storage issues"
+  },
+  {
+    "error": "snapshot permission denied",
+    "resolution": "Step 1: Check that the token you're using has the required policies for snapshot creation\nStep 2: Review Vault's audit logs for any permission-related errors\nStep 3: Update the token's policies or generate a new token with higher privileges"
+  },
+  {
+    "error": "raft storage access denied",
+    "resolution": "Step 1: Verify that Vault has proper permissions to access the underlying storage backend\nStep 2: Review the storage backend's access control and ensure Vault is permitted to write and read from it\nStep 3: Adjust the access controls and retry"
+  },
+  {
+    "error": "replication token expired",
+    "resolution": "Step 1: Generate a new replication token in the primary cluster\nStep 2: Update the secondary cluster with the new token\nStep 3: Restart the replication process on the secondary cluster to resume sync"
+  },
+  {
+    "error": "raft leader election failure",
+    "resolution": "Step 1: Ensure that a majority of nodes are online and unsealed to form a quorum\nStep 2: Verify network connectivity between the nodes in the Raft cluster\nStep 3: Check Vault logs for leader election failure messages and resolve any related issues"
+  },
+  {
+    "error": "raft peer removal failed",
+    "resolution": "Step 1: Confirm that the peer node you're trying to remove is not the current leader\nStep 2: Use 'vault operator raft remove-peer' with the correct node ID to remove the peer\nStep 3: Verify the removal with 'vault operator raft list-peers' and check Vault logs"
+  },
+  {
+    "error": "snapshot restore fails",
+    "resolution": "Step 1: Ensure that the snapshot file is intact and not corrupted\nStep 2: Verify that the target Vault server is correctly configured to accept a restore\nStep 3: Run 'vault operator raft snapshot restore <snapshot_file_path>' from the correct node\nStep 4: Check Vault logs for any errors or issues during the restore process"
+  },
+  {
+    "error": "snapshot file not found",
+    "resolution": "Step 1: Verify that the snapshot file exists at the specified location\nStep 2: Check Vault server logs to ensure the snapshot was successfully created and stored\nStep 3: Confirm that the correct file path is being used to access the snapshot"
+  },
+  {
+    "error": "snapshot backup timeout",
+    "resolution": "Step 1: Check if the snapshot operation is taking longer than expected due to large data volumes\nStep 2: Increase the snapshot timeout value in Vault configuration\nStep 3: Verify storage backend performance (e.g., check I/O throughput on disks)"
+  },
+  {
+    "error": "leader unreachable",
+    "resolution": "Step 1: Ensure network connectivity between the follower and the leader nodes\nStep 2: Check if the leader node is still healthy and running\nStep 3: Use 'vault operator raft list-peers' to verify the leader node status\nStep 4: If the leader is unreachable, trigger a failover by running 'vault operator step-down' on the leader"
+  },
+  {
+    "error": "leader is unavailable",
+    "resolution": "Step 1: Ensure that the Vault leader node is running and reachable\nStep 2: Check the Vault logs for any issues on the leader node (e.g., resource exhaustion, crash)\nStep 3: If the leader node is unavailable, initiate failover with 'vault operator step-down' to promote a new leader"
+  },
+  {
+    "error": "follower out of sync",
+    "resolution": "Step 1: Run 'vault operator raft list-peers' to check the follower's status\nStep 2: Verify that the follower node is connected to the leader and syncing data\nStep 3: Restart or rejoin the follower node using 'vault operator raft join' if necessary\nStep 4: Ensure that the network is stable between the leader and follower nodes"
+  },
+  {
+    "error": "follower not receiving updates",
+    "resolution": "Step 1: Check network connectivity between the leader and follower nodes\nStep 2: Ensure the follower node is not behind in logs or lagging\nStep 3: Use 'vault operator raft list-peers' to confirm the replication status between nodes\nStep 4: Check Vault logs for errors that might indicate why updates are not being replicated"
+  }
+]
+
+
   
   
