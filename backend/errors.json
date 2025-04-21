@@ -1,7 +1,7 @@
 [
     {
       "error": "vault is sealed",
-      "resolution": "→ Use the unseal key to unseal Vault."
+      "resolution": "Step 1: export VAULT_ADDR=<Vault ADDR> (e.g., http://127.0.0.1:8200)\nStep 2: vault operator unseal <unseal_key_1>\nStep 3: vault operator unseal <unseal_key_2>\nStep 4: vault operator unseal <unseal_key_3>\nStep 5: Confirm Vault is unsealed using"
     },
     {
       "error": "connection",
