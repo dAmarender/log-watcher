@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Start Monitoring - Vault Monitoring System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #97783a, #6b8a9c);
+      color: #ffffff;
+      padding: 20px;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #f1f2eb;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(247, 251, 250, 0.5);
+    }
+
+    h2 {
+      color: #fdfefe;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      background-color: #3f6f6b;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .nav-btn:hover {
+      background-color: #9a6026;
+    }
+
+    .company-name {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-size: 36px;
+      font-family: 'Arial Black', sans-serif;
+      font-weight: bold;
+    }
+
+    .company-name a {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .company-name span:first-child {
+      color: #0a710a;
+    }
+
+    .company-name span:last-child {
+      color: #3f3c3c;
+    }
+
+    .home-page, #logsSection {
+      padding: 20px;
+    }
+
+    #log {
+      background: #000;
+      color: #0f0;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-family: monospace;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    #errors, #resolutions {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+
+    #logsSection {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="company-name">
+    <a href="index.html">
+      <span>AI</span><span>LogsWatcher</span>
+    </a>
+  </div>
+
+  <div class="navbar">
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="location.href='index.html'">Home</button>
+      <button class="nav-btn" onclick="location.href='integrations.html'">Integrations</button>
+      <button class="nav-btn" onclick="location.href='start-monitoring.html'">Start Monitoring</button>
+    </div>
+  </div>
+
+  <div class="home-page">
+    <h2>Click below to start monitoring Vault logs</h2>
+    <button class="nav-btn" onclick="startMonitoring()">Start</button>
+  </div>
+
+  <div id="logsSection">
+    <h2>Live Logs</h2>
+    <button class="nav-btn" id="toggleBtn" onclick="toggleAutoRefresh()">Pause Auto Refresh</button>
+    <div id="log">Loading logs...</div>
+    <div id="errors">Checking for errors...</div>
+    <div id="resolutions">Checking for resolutions...</div>
+  </div>
+
+  <script>
+    let autoRefresh = true;
+    let intervalId = null;
+
+    const errorEl = document.getElementById("errors");
+    const resolutionEl = document.getElementById("resolutions");
+
+    async function fetchLogs() {
+      try {
+        const logsResponse = await fetch("http://localhost:8000/logs?limit=100");
+        const logs = await logsResponse.json();
+        const logEl = document.getElementById("log");
+
+        const isAtBottom = logEl.scrollTop + logEl.clientHeight >= logEl.scrollHeight - 50;
+        logEl.innerText = logs.join("\n");
+
+        if (isAtBottom) {
+          logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        const errors = logs.filter(line =>
+          /error|failed|vault is sealed|revoked lease|root generation initialized|invalid token|token expired|token renewal failed|token valid|token revoke/i.test(line)
+        );
+
+        const resolutionsResponse = await fetch("http://localhost:8000/resolutions");
+        const resolutionsData = await resolutionsResponse.json();
+
+        errorEl.innerText = errors.length ? errors.join("\n") : "✅ No errors found";
+
+        const resolutions = errors.map(error => {
+          const matchingResolution = resolutionsData.find(res => error.match(new RegExp(res.error, "i")));
+          return matchingResolution ? matchingResolution.resolution : "→ Investigate the issue manually.";
+        });
+
+        resolutionEl.innerText = resolutions.length ? resolutions.join("\n") : "✅ No issues to resolve.";
+      } catch (err) {
+        console.error("Failed to fetch logs or resolutions", err);
+      }
+    }
+
+    function toggleAutoRefresh() {
+      autoRefresh = !autoRefresh;
+      const btn = document.getElementById("toggleBtn");
+      if (autoRefresh) {
+        intervalId = setInterval(fetchLogs, 1000);
+        btn.innerText = "Pause Auto Refresh";
+      } else {
+        clearInterval(intervalId);
+        btn.innerText = "Resume Auto Refresh";
+      }
+    }
+
+    function startMonitoring() {
+      document.querySelector(".home-page").style.display = "none";
+      document.getElementById("logsSection").style.display = "block";
+      fetchLogs();
+      intervalId = setInterval(fetchLogs, 1000);
+    }
+
+    // Auto-start monitoring if linked via hash
+    if (window.location.hash === "#logsSection") {
+      startMonitoring();
+    }
+  </script>
+</body>
+</html>
+

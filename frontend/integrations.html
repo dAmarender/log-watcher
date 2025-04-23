@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Integrations - Vault Monitoring System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #97783a, #6b8a9c);
+      color: #ffffff;
+      padding: 20px;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #f1f2eb;
+      margin: 0;
+      text-shadow: 2px 2px 5px rgba(247, 251, 250, 0.5);
+    }
+
+    h2 {
+      color: #fdfefe;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      background-color: #3f6f6b;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .nav-btn:hover {
+      background-color: #9a6026;
+    }
+
+    .company-name {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      font-size: 36px;
+      font-family: 'Arial Black', sans-serif;
+      font-weight: bold;
+    }
+
+    .company-name a {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .company-name span:first-child {
+      color: #0a710a;
+    }
+
+    .company-name span:last-child {
+      color: #3f3c3c;
+    }
+
+    .content {
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    ul {
+      margin-top: 15px;
+    }
+
+    li {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="company-name">
+    <a href="index.html">
+      <span>AI</span><span>LogsWatcher</span>
+    </a>
+  </div>
+
+  <div class="navbar">
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="location.href='index.html'">Home</button>
+      <button class="nav-btn" onclick="location.href='integrations.html'">Integrations</button>
+      <button class="nav-btn" onclick="location.href='start-monitoring.html'">Start Monitoring</button>  
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>Available Integrations</h2>
+    <ul>
+      <li>📦 Slack – Instant alerts for Vault activity.</li>
+      <li>📊 Grafana – Real-time visualization dashboards.</li>
+      <li>📥 Email – Automated email notifications for issues.</li>
+      <li>💬 Webhooks – Custom triggers and automated workflows.</li>
+      <li>🧠 AI Bot – Smart recommendations and anomaly detection.</li>
+    </ul>
+  </div>
+</body>
+</html>
+
