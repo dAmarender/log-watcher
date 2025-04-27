@@ -1,0 +1,8 @@
+[
+    {
+        "error": "vault is sealed",
+        "resolution": {
+            "error": "Failed to fetch solution from AI"
+        }
+    }
+]

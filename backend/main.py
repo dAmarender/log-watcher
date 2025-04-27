@@ -1,18 +1,28 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from typing import List
 import os
 import re
-import asyncio
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-from fastapi.responses import JSONResponse
 import json
+import asyncio
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from openai import OpenAI
+from dotenv import load_dotenv
+from typing import List
 
-# FastAPI setup
+# Load environment variables
+load_dotenv()
+
+# Configuration
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(CURRENT_DIR, "..", "vault.log")
+JSON_FILE = "error_solutions.json"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
+
+# FastAPI app
 app = FastAPI()
 
-# Middleware for CORS
+# Allow CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,13 +31,131 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Directories
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = os.path.join(CURRENT_DIR, "..", "vault.log")
-ERROR_JSON_PATH = os.path.join(CURRENT_DIR, "errors.json")
+# List of active WebSocket connections
+active_connections: List[WebSocket] = []
 
-# WebSocket connection list
-active_connections = []
+# --- Helper Functions ---
+
+def extract_vault_address_from_logs(log_file):
+    if not os.path.exists(log_file):
+        return "http://127.0.0.1:8200"
+    with open(log_file, "r") as f:
+        for line in f:
+            match = re.search(r'(https?://[^\s":]+:\d+)', line)
+            if match:
+                return match.group(1)
+    return "http://127.0.0.1:8200"
+
+def load_resolutions_from_json():
+    if os.path.exists(JSON_FILE):
+        with open(JSON_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return []
+
+def save_resolutions_to_json(data):
+    with open(JSON_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+async def send_issue_to_frontend(message: str):
+    for connection in active_connections:
+        try:
+            await connection.send_text(message)
+        except Exception as e:
+            print(f"WebSocket send error: {e}")
+
+async def fetch_solution_from_openai(error_message: str):
+    try:
+        response = openai_client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a professional DevOps Engineer. When asked about Vault errors, respond ONLY with the exact terminal commands required to fix the error. Do not include explanations, just provide the commands. Example response: 'vault operator unseal <unseal_key>'."
+                },
+                {
+                    "role": "user",
+                    "content": f"Provide only the terminal commands to fix this Vault error (no explanation): {error_message}"
+                }
+            ],
+            temperature=0,
+            max_tokens=150,  # Adjusted max tokens to avoid unnecessary verbosity
+        )
+        solution = response.choices[0].message.content.strip()
+        # Ensure we only return commands and remove any explanations or extraneous text
+        solution = re.sub(r"(?:\n|^)[^\w\s\-\.\:]+(?:\n|$)", "", solution).strip()  # Remove non-command text.
+        return solution
+    except Exception as e:
+        print(f"OpenAI API error: {e}")
+        return "❗ Failed to fetch solution from AI."
+
+
+
+def match_known_error(log_line: str):
+    """Try to match the log line with known errors."""
+    log_line = log_line.lower()
+
+    if "vault is sealed" in log_line:
+        return "vault is sealed"
+
+    # Add more patterns here if needed
+    return None
+
+async def handle_error(error_key: str):
+    """Handle error: check in JSON, fetch from OpenAI if new, and send to frontend."""
+    resolutions = load_resolutions_from_json()
+
+    # Check if error already exists
+    for item in resolutions:
+        if item["error"] == error_key:
+            resolution = item["resolution"]
+            break
+    else:
+        print(f"🔎 New error detected, querying OpenAI...")
+        ai_solution = await fetch_solution_from_openai(error_key)
+
+        # Add new entry
+        new_entry = {
+            "error": error_key,
+            "resolution": ai_solution
+        }
+        resolutions.append(new_entry)
+        save_resolutions_to_json(resolutions)
+        resolution = ai_solution
+
+    vault_address = extract_vault_address_from_logs(LOG_FILE)
+    resolution_with_addr = resolution.replace("<Vault ADDR>", vault_address)
+    solution_text = f"Problem: {error_key}\n\nResolution:\n{resolution_with_addr}"
+    await send_issue_to_frontend(solution_text)
+
+def extract_error_message(log_line: str):
+    """Extract error messages from log line."""
+    if "error" in log_line.lower() or "failed" in log_line.lower() or "vault is sealed" in log_line.lower():
+        matched_error = match_known_error(log_line)
+        if matched_error:
+            return matched_error
+        return log_line.strip()
+    return None
+
+async def monitor_logs_async():
+    """Async monitor for Vault logs."""
+    if not os.path.exists(LOG_FILE):
+        print(f"❗ Log file {LOG_FILE} does not exist.")
+        return
+
+    with open(LOG_FILE, "r", encoding="utf-8") as log_file:
+        log_file.seek(0, os.SEEK_END)
+
+        while True:
+            line = log_file.readline()
+            if line:
+                error_message = extract_error_message(line)
+                if error_message:
+                    print(f"\n🛑 Error detected: {error_message}")
+                    await handle_error(error_message)
+            else:
+                await asyncio.sleep(1)
+
+# --- FastAPI Endpoints ---
 
 @app.get("/")
 def read_root():
@@ -38,25 +166,14 @@ def get_logs(limit: int = 100):
     if not os.path.exists(LOG_FILE):
         return ["Log file not found."]
     with open(LOG_FILE, "r") as f:
-        lines = f.readlines()[-limit:]
-    return [line.strip() for line in lines]
-
-def extract_vault_address_from_logs(log_file):
-    if not os.path.exists(log_file):
-        return "http://127.0.0.1:8200"  # Fallback default
-    with open(log_file, "r") as f:
-        for line in f:
-            match = re.search(r'(https?://[^\s":]+:\d+)', line)
-            if match:
-                return match.group(1)
-    return "http://127.0.0.1:8200"
+        return [line.strip() for line in f.readlines()[-limit:]]
 
 @app.get("/resolutions")
 def get_resolutions():
-    if not os.path.exists(ERROR_JSON_PATH):
+    if not os.path.exists(JSON_FILE):
         return JSONResponse(status_code=404, content={"error": "Resolution file not found."})
 
-    with open(ERROR_JSON_PATH, "r") as f:
+    with open(JSON_FILE, "r") as f:
         data = json.load(f)
 
     vault_address = extract_vault_address_from_logs(LOG_FILE)
@@ -72,53 +189,18 @@ async def websocket_endpoint(websocket: WebSocket):
     active_connections.append(websocket)
     try:
         while True:
-            await asyncio.sleep(3600)  # Keep connection open
+            await websocket.receive_text()
     except WebSocketDisconnect:
         active_connections.remove(websocket)
 
-def send_issue_to_frontend(issue: str):
-    for connection in active_connections:
-        try:
-            asyncio.create_task(connection.send_text(issue))
-        except Exception as e:
-            print(f"Error sending to websocket: {e}")
+@app.get("/search_error/{error_message}")
+async def search_error(error_message: str):
+    await handle_error(error_message)
+    return {"message": "Check UI for solution"}
 
-class VaultLogMonitor(FileSystemEventHandler):
-    def __init__(self, log_file_path: str):
-        self.log_file_path = log_file_path
-
-    def on_modified(self, event):
-        if event.src_path == self.log_file_path:
-            with open(self.log_file_path, 'r') as f:
-                lines = f.readlines()
-                for line in lines[-10:]:
-                    self.detect_anomalies(line)
-
-    def detect_anomalies(self, log_line: str):
-        if re.search(r"Vault sealed", log_line):
-            self.report_issue("Vault is sealed")
-        elif re.search(r"token revoked", log_line):
-            self.report_issue("Token was revoked")
-        elif re.search(r"generated new token", log_line):
-            self.report_issue("New token generated")
-
-    def report_issue(self, issue: str):
-        print(f"Detected Issue: {issue}")
-        send_issue_to_frontend(issue)
-
-def run_log_monitor():
-    event_handler = VaultLogMonitor(LOG_FILE)
-    observer = Observer()
-    observer.schedule(event_handler, path=LOG_FILE, recursive=False)
-    observer.start()
-    try:
-        while True:
-            asyncio.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+# --- Startup Event ---
 
 @app.on_event("startup")
 async def startup_event():
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, run_log_monitor)
+    print("🚀 Starting Vault log monitoring...")
+    asyncio.create_task(monitor_logs_async())
