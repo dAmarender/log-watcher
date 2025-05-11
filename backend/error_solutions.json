@@ -1,8 +1,10 @@
 [
     {
         "error": "vault is sealed",
-        "resolution": {
-            "error": "Failed to fetch solution from AI"
-        }
+        "resolution": "{\n  \"issue\": \"Vault is sealed\",\n  \"root_cause\": \"Vault is in a sealed state due to a restart or a configuration issue.\",\n  \"resolution_steps\": [\n    {\n      \"step\": 1,\n      \"description\": \"Check the status of the Vault\",\n      \"command\": \"vault status\",\n      \"expected_output\": {\"Sealed\": true}\n    },\n    {\n      \"step\": 2,\n      \"description\": \"Unseal the Vault using the unseal keys\",\n      \"command\": \"vault operator unseal <unseal_key>\",\n      \"expected_output\": {\"Sealed\": false}\n    }\n  ],\n  \"recommendations\": [\"Always keep the unseal keys in a secure place.\", \"Consider setting up auto-unseal for ease of operations.\"]\n}"
+    },
+    {
+        "error": "revoked lease",
+        "resolution": "{\n  \"issue\": \"Revoked lease\",\n  \"root_cause\": \"The lease for a secret in Vault has been revoked, either manually or due to expiration.\",\n  \"resolution_steps\": [\n    {\n      \"step\": 1,\n      \"description\": \"Check the status of the lease\",\n      \"command\": \"vault lease lookup <lease_id>\",\n      \"expected_output\": {\"lease_id\": \"<lease_id>\", \"renewable\": false, \"revoked\": true}\n    },\n    {\n      \"step\": 2,\n      \"description\": \"If the lease is indeed revoked, you will need to create a new secret and lease.\",\n      \"command\": \"vault write secret/<path> value=<value>\",\n      \"expected_output\": {\"lease_id\": \"<new_lease_id>\", \"renewable\": true, \"revoked\": false}\n    }\n  ],\n  \"recommendations\": [\"Always monitor your leases and renew them before they expire to prevent revocation.\", \"Consider setting up alerts for when leases are close to expiration.\"]\n}"
     }
 ]
