@@ -21,7 +21,7 @@ VAULT_PID=$!
 
 # Open frontend in default browser
 echo "[*] Opening frontend in default browser..."
-xdg-open frontend/index.html || open frontend/index.html || start frontend/index.html
+open frontend/index.html || open frontend/index.html || start frontend/index.html
 
 # Wait for the user to terminate
 echo "[*] Press Ctrl+C to stop everything..."

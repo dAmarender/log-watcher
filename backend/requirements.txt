@@ -5,4 +5,5 @@ watchdog
 websocket-client
 openai
 python-dotenv
+python-multipart
 
