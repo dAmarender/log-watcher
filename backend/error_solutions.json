@@ -1,6 +1,6 @@
 [
     {
         "error": "vault is sealed",
-        "resolution": "Failed to fetch solution from AI"
+        "resolution": "{\n  \"issue\": \"Vault is sealed\",\n  \"root_cause\": \"Vault automatically seals itself to protect its data when it detects potential threats, such as intrusion attempts or system crashes.\",\n  \"resolution_steps\": [\n    {\n      \"step\": 1,\n      \"description\": \"Check the status of the Vault\",\n      \"command\": \"vault status\",\n      \"expected_output\": {\n        \"Sealed\": true\n      }\n    },\n    {\n      \"step\": 2,\n      \"description\": \"Unseal the Vault using the unseal keys. This step needs to be repeated for the number of required unseals.\",\n      \"command\": \"vault operator unseal <unseal_key>\",\n      \"expected_output\": {\n        \"Sealed\": false\n      }\n    }\n  ],\n  \"optional_automation\": {\n    \"description\": \"Automate the unsealing process using a script\",\n    \"config_example\": {\n      \"unseal_script.sh\": {\n        \"unseal_keys\": [\"<unseal_key_1>\", \"<unseal_key_2>\", \"<unseal_key_3>\"],\n        \"vault_address\": \"<vault_address>\"\n      }"
     }
 ]
