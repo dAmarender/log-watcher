@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Watch Logs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .log-path {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 AI LogsWatcher - Vault Logs</h1>
+  <p>Monitoring logs at:</p>
+  <p class="log-path" id="logPathDisplay"></p>
+
+  <script>
+    // Get query string parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const logPath = urlParams.get('path');
+
+    if (logPath) {
+      document.getElementById('logPathDisplay').textContent = decodeURIComponent(logPath);
+    } else {
+      document.getElementById('logPathDisplay').textContent = "No log path provided.";
+    }
+  </script>
+</body>
+</html>
