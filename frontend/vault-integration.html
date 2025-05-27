@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AILogsWatcher</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"/>
+
+  <style>
+    /* Basic Navbar Styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #f8f8f8;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      padding: 0.5rem;
+    }
+
+    .auth-link {
+      font-weight: bold;
+      color: #0056b3;
+    }
+
+    /* Dropdown Styling */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      cursor: pointer;
+      padding: 0.5rem;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      padding: 1rem;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1000;
+      min-width: 300px;
+      top: 100%;
+      left: 0;
+      border-radius: 8px;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .sub-dropdown {
+      margin-bottom: 10px;
+    }
+
+    .sub-dropdown span {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .sub-dropdown ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+    }
+
+    .sub-dropdown ul li {
+      margin: 5px 0;
+    }
+
+    .sub-dropdown ul li a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    .sub-dropdown ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Other content styling (optional minimal) */
+    section {
+      padding: 4rem 2rem;
+    }
+
+    .cta-button {
+      background-color: #0056b3;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+
+    footer {
+      background: #f8f8f8;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    /* Hide all sections by default */
+    .section {
+        display: none;
+    }
+
+    /* Show only the active section */
+    .section.active {
+        display: block;
+    }
+
+    /* Tab buttons basic styling */
+    .tab-button {
+        background-color: #eee;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-right: 5px;
+        border-radius: 4px 4px 0 0;
+        transition: background-color 0.3s;
+    }
+
+    .tab-button:hover {
+        background-color: #ddd;
+    }
+
+    /* Active tab button style */
+    .tab-button.active {
+        background-color: #0056b3;
+        color: white;
+        cursor: default;
+    }
+
+    /* Terminal style for log containers */
+    .log-container {
+        background-color: #1e1e1e; /* dark terminal background */
+        color: #33ff33;            /* classic green terminal text */
+        font-family: 'Source Code Pro', monospace, monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        padding: 1rem;
+        border-radius: 6px;
+        height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap; /* preserve line breaks */
+        box-shadow: inset 0 0 10px #00ff00aa;
+        border: 1px solid #00ff00aa;
+        user-select: text !important;
+        user-select: text; /* Allow manual text selection */
+        -webkit-user-select: text; /* Safari support */
+        -moz-user-select: text;    /* Firefox support */
+        -ms-user-select: text; 
+    }
+
+    /* Container holding the tabs */
+    .tabs {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+    }
+
+    /* Hide all sections by default */
+    .section {
+        display: none;
+    }
+
+    /* Show only the active section */
+    .section.active {
+        display: block;
+    }
+
+    /* Attractive tab buttons */
+    .tab-button {
+        background: linear-gradient(145deg, #007acc, #005a99);
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px 8px 0 0;
+        color: #e0e0e0;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px #003b66aa;
+        transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+        user-select: none;
+    }
+
+    .tab-button:hover:not(.active) {
+        background: linear-gradient(145deg, #0090ff, #006bbf);
+        box-shadow: 0 6px 8px #005a9fbb;
+        transform: translateY(-2px);
+    }
+
+    .tab-button:focus-visible {
+        outline: 3px solid #33ff33;
+        outline-offset: 2px;
+    }
+
+    .tab-button.active {
+        background: linear-gradient(145deg, #00ff44, #009933);
+        color: #000;
+        box-shadow: 0 0 15px #00ff44, 0 0 30px #33ff33;
+        cursor: default;
+        transform: translateY(0);
+    }
+
+    /* Action button styling (Pause/Resume Auto Refresh) */
+    .action-btn {
+        margin-top: 1rem;
+        background: linear-gradient(145deg, #ff4500, #cc3700);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 4px 8px #cc3300bb;
+        transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+        user-select: none;
+    }
+
+    .action-btn:hover {
+        background: linear-gradient(145deg, #ff5c1e, #e65100);
+        box-shadow: 0 6px 10px #e65100cc;
+        transform: translateY(-2px);
+    }
+
+    .action-btn:focus-visible {
+        outline: 3px solid #ffbb33;
+        outline-offset: 2px;
+    }
+    .left-section, .right-section {
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .left-section {
+      width: 40%;
+      background-color: #f4f4f4;
+      border-right: 1px solid #ccc;
+    }
+
+    .right-section {
+      width: 60%;
+      background-color: #fff;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="navbar">
+      <div class="logo">AILogsWatcher</div>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#solutions">Solutions</a>
+
+        <!-- Integrations Dropdown -->
+        <div class="dropdown">
+          <a href="#integrations" class="dropbtn">Integrations</a>
+          <div class="dropdown-content">
+            <div class="sub-dropdown">
+              <span>Applications Integration</span>
+              <ul>
+                <li><a href="vault-integration.html">HashiCorp Vault</a></li>
+                <li><a href="#">CyberArk</a></li>
+                <li><a href="#">PingFederate</a></li>
+                <li><a href="#">Okta</a></li>
+                <li><a href="#">IdentityNow</a></li>
+              </ul>
+            </div>
+            <div class="sub-dropdown">
+              <span>Log Analysis Tools Integration</span>
+              <ul>
+                <li><a href="#">Splunk</a></li>
+                <li><a href="#">Grafana</a></li>
+                <li><a href="#">Prometheus</a></li>
+                <li><a href="#">CloudWatch</a></li>
+                <li><a href="#">New Relic</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <a href="#docs">Docs</a>
+        <a href="#contact">Contact</a>
+        <a href="#login" class="auth-link">Login</a>
+        <a href="#signup" class="auth-link">Sign Up</a>
+      </nav>
+    </div>
+  </header>
+<body>
+  <div class="container">
+
+    <div class="tabs">
+      <button class="tab-button active" onclick="switchTab('live')">Live Logs</button>
+      <button class="tab-button" onclick="switchTab('errors')">Detected Errors</button>
+      <button class="tab-button" onclick="switchTab('resolutions')">Suggested Solutions</button>
+    </div>
+
+    <div id="live" class="section active">
+      <div class="log-container" id="log">Loading logs...</div>
+      <button class="action-btn" id="toggleBtn" onclick="toggleAutoRefresh()">Pause Auto Refresh</button>
+    </div>
+
+    <div id="errors" class="section">
+      <div class="log-container" id="errorLog">Loading issues...</div>
+    </div>
+
+    <div id="resolutions" class="section">
+      <div class="log-container" id="resolutionLog">Loading resolutions...</div>
+    </div>
+  </div>
+  <script>
+    let autoRefresh = true;
+    let intervalId = null;
+
+    const logEl = document.getElementById("log");
+    const errorEl = document.getElementById("errorLog");
+    const resolutionEl = document.getElementById("resolutionLog");
+    const toggleBtn = document.getElementById("toggleBtn");
+
+    async function fetchLogs() {
+      try {
+        const logsResponse = await fetch("http://localhost:8000/logs?limit=100");
+        const logs = await logsResponse.json();
+
+        const isAtBottom = logEl.scrollTop + logEl.clientHeight >= logEl.scrollHeight - 50;
+        logEl.innerText = logs.join("\n");
+        if (isAtBottom) logEl.scrollTop = logEl.scrollHeight;
+
+        const errors = logs.filter(line =>
+          /error|failed|vault is sealed|revoked lease|vault is unsealed|root generation initialized|invalid token|token expired|token renewal failed|token valid|token revoke/i.test(line)
+        );
+
+        const resolutionsResponse = await fetch("http://localhost:8000/resolutions");
+        const resolutionsData = await resolutionsResponse.json();
+
+        errorEl.innerText = errors.length ? errors.join("\n") : "✅ No errors found";
+
+        const resolutions = errors.map(error => {
+          const match = resolutionsData.find(res => error.match(new RegExp(res.error, "i")));
+          return match ? `🛠 ${match.resolution}` : "→ Investigate the issue manually.";
+        });
+
+        resolutionEl.innerText = resolutions.length ? resolutions.join("\n") : "✅ No issues to resolve.";
+      } catch (err) {
+        console.error("Failed to fetch logs or resolutions", err);
+        logEl.innerText = "⚠️ Failed to fetch logs.";
+        errorEl.innerText = "";
+        resolutionEl.innerText = "";
+      }
+    }
+
+    function toggleAutoRefresh() {
+      autoRefresh = !autoRefresh;
+      if (autoRefresh) {
+        intervalId = setInterval(fetchLogs, 1000);
+        toggleBtn.innerText = "Pause Auto Refresh";
+      } else {
+        clearInterval(intervalId);
+        toggleBtn.innerText = "Resume Auto Refresh";
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+
+      document.querySelector(`.tab-button[onclick="switchTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    fetchLogs();
+    intervalId = setInterval(fetchLogs, 1000);
+  </script>
+</body>
+</html>
