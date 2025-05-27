@@ -2,180 +2,263 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Integrations - Vault Monitoring System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Integrations | AILogsWatcher</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #97783a, #6b8a9c);
-      color: #ffffff;
-      padding: 20px;
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-    }
-
-    h1 {
-      color: #f1f2eb;
-      margin: 0;
-      text-shadow: 2px 2px 5px rgba(247, 251, 250, 0.5);
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      color: #fdfefe;
-    }
-
-    .section {
-      margin-top: 60px;
-      margin-bottom: 30px;
-    }
-
-    pre {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      background: #1e1e1e;
-      padding: 10px;
-      border-radius: 5px;
-      max-height: 30vh;
-      overflow-y: auto;
-      border: 1px solid #eff4f2;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 15px;
-      border: none;
-      background: #3f6f6b;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-
-    button:hover {
-      background: #9a6026;
-    }
-
-    .company-name {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
-      font-size: 36px;
-      font-family: 'Arial Black', sans-serif;
-      font-weight: bold;
-    }
-
-    .company-name a {
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .company-name span:first-child {
-      color: #0a710a;
-    }
-
-    .company-name span:last-child {
-      color: #3f3c3c;
-    }
-
-    .home-page {
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: left;
-      padding: 20px;
-    }
-
-    .home-page p {
-      font-size: 18px;
+    /* Your CSS remains unchanged */
+    .tab-container {
       margin-top: 20px;
     }
 
-    .home-page .features-list {
-      list-style-type: none;
-      padding: 0;
-      margin-top: 30px;
-    }
-
-    .home-page .features-list li {
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    /* Navbar styles */
-    .navbar {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000; /* Ensure it stays on top */
-    }
-
-    .nav-buttons {
+    .tab-buttons {
       display: flex;
-      gap: 10px;
+      margin-bottom: 5px;
     }
 
-    .nav-btn {
-      background-color: #3f6f6b;
-      color: white;
-      padding: 10px 20px;
-      border: none;
+    .tab-buttons button {
+      flex: 0 1 auto;
+      padding: 6px 12px;
       cursor: pointer;
-      font-size: 16px;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      border-bottom: none;
+      margin-right: 10px;
+      font-size: 10px;
+      border-radius: 2px;
     }
 
-    .nav-btn:hover {
-      background-color: #9a6026;
+    .tab-buttons button.active {
+      background: #fff;
+      font-weight: bold;
     }
 
-    .content {
-      padding: 40px;
-      max-width: 800px;
-      margin: 0 auto;
+    .tab-content {
+      border: 1px solid #ccc;
+      padding: 10px;
+      display: none;
+      height: 300px;
+      overflow-y: auto;
     }
 
-    ul {
-      margin-top: 15px;
+    .tab-content.active {
+      display: block;
     }
 
-    li {
-      margin: 10px 0;
-      font-size: 16px;
+    #log {
+      background: #000;
+      color: #0f0;
+    }
+
+    #errors {
+      background: #ffdddd;
+    }
+
+    #resolutions {
+      background: #ddffdd;
     }
   </style>
 </head>
 <body>
-  <div class="company-name">
-    <a href="index.html">
-      <span>AI</span><span>LogsWatcher</span>
-    </a>
-  </div>
-
-  <div class="navbar">
-    <div class="nav-buttons">
-      <button class="nav-btn" onclick="location.href='index.html'">Home</button>
-      <button class="nav-btn" onclick="location.href='integrations.html'">Integrations</button>
-      <button class="nav-btn" onclick="location.href='start-monitoring.html'">Start Monitoring</button>  
+  <header>
+    <div class="navbar">
+      <div class="logo">AILogsWatcher</div>
+      <nav class="nav-links">
+        <a href="index.html">HOME</a>
+        <a href="integrations.html">INTEGRATIONS</a>
+        <a href="#contact">CONTACT</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <div class="content">
-    <h2>Available Integrations</h2>
-    <ul>
-      <li>📦 Slack – Instant alerts for Vault activity.</li>
-      <li>📊 Grafana – Real-time visualization dashboards.</li>
-      <li>📥 Email – Automated email notifications for issues.</li>
-      <li>💬 Webhooks – Custom triggers and automated workflows.</li>
-      <li>🧠 AI Bot – Smart recommendations and anomaly detection.</li>
-    </ul>
-  </div>
+  <section id="integrations" class="integration-sections">
+    <div class="left-plane" data-aos="fade-right">
+      <ul class="integration-list">
+        <li class="integration-item">
+          <h2>HashiCorp Vault</h2>
+          <ul class="sub-options">
+            <li><h3 onclick="showOperationalLogs()">Operational Logs Integration</h3></li>
+            <li><h3 onclick="showAuditLogs()">Audit Logs</h3></li>
+          </ul>
+        </li>
+        <li class="integration-item"><h2>CyberArk</h2></li>
+        <li class="integration-item"><h2>IdentityNow</h2></li>
+        <li class="integration-item"><h2>PingFed</h2></li>
+      </ul>
+    </div>
+
+    <div class="right-plane" id="right-plane" data-aos="fade-up">
+      <h2>Choose your application to integrate with AILogsWatcher</h2>
+      <p>Please select the application from the left side and start watching your application logs.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AILogsWatcher. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Support</a>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+
+    let autoRefresh = true;
+    let intervalId = null;
+
+    function showOperationalLogs() {
+      const rightPane = document.getElementById('right-plane');
+      rightPane.innerHTML = `
+        <h2>HashiCorp Vault Operational Logs</h2>
+        <p>Enter the path to live logs or upload a log file:</p>
+        <input type="text" id="logPathInput" placeholder="e.g. /var/log/vault/operations.log"
+               style="width: 80%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc;" />
+        <input type="file" id="logFileUpload" accept=".log" style="margin: 10px 0;" />
+        <button onclick="loadLogs()" style="padding: 6px 16px; border-radius: 6px;">Load Logs</button>
+        <button id="toggleBtn" onclick="toggleAutoRefresh()" disabled style="margin-left: 10px; padding: 6px 14px; border-radius: 6px;">Pause Auto Refresh</button>
+
+        <div class="tab-container">
+          <div class="tab-buttons">
+            <button class="tab-link active" onclick="showTab(event, 'log')">Live Logs</button>
+            <button class="tab-link" onclick="showTab(event, 'errors')">Detected Errors</button>
+            <button class="tab-link" onclick="showTab(event, 'resolutions')">Suggested Resolutions</button>
+          </div>
+          <pre id="log" class="tab-content active">Waiting for logs...</pre>
+          <pre id="errors" class="tab-content"></pre>
+          <pre id="resolutions" class="tab-content"></pre>
+        </div>
+      `;
+    }
+
+    function showAuditLogs() {
+      const rightPane = document.getElementById('right-plane');
+      rightPane.innerHTML = `
+        <h2>HashiCorp Vault Audit Logs</h2>
+        <p>Enter the path to live logs or upload a log file:</p>
+        <input type="text" id="logPathInput" placeholder="e.g. /var/log/vault/operations.log"
+               style="width: 80%; padding: 10px; margin: 10px 0; border-radius: 6px; border: 1px solid #ccc;" />
+        <input type="file" id="logFileUpload" accept=".log" style="margin: 10px 0;" />
+        <button onclick="loadLogs()" style="padding: 6px 16px; border-radius: 6px;">Load Logs</button>
+        <button id="toggleBtn" onclick="toggleAutoRefresh()" disabled style="margin-left: 10px; padding: 6px 14px; border-radius: 6px;">Pause Auto Refresh</button>
+
+        <div class="tab-container">
+          <div class="tab-buttons">
+            <button class="tab-link active" onclick="showTab(event, 'log')">Live Logs</button>
+            <button class="tab-link" onclick="showTab(event, 'errors')">Detected Errors</button>
+            <button class="tab-link" onclick="showTab(event, 'resolutions')">Suggested Resolutions</button>
+          </div>
+          <pre id="log" class="tab-content active">Waiting for logs...</pre>
+          <pre id="errors" class="tab-content"></pre>
+          <pre id="resolutions" class="tab-content"></pre>
+        </div>
+      `;
+    }
+
+    function showTab(event, tabId) {
+      const tabs = ['log', 'errors', 'resolutions'];
+      tabs.forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      document.querySelectorAll('.tab-link').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function loadLogs() {
+      const fileInput = document.getElementById('logFileUpload');
+      const pathInput = document.getElementById('logPathInput').value;
+      const logEl = document.getElementById("log");
+      const toggleBtn = document.getElementById("toggleBtn");
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('logfile', file);
+
+        fetch('http://localhost:8000/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          logEl.innerText = data.preview || '✅ File uploaded. Logs being processed.';
+          startFetchingLogs();
+          toggleBtn.disabled = false;
+        })
+        .catch(err => {
+          console.error('Upload failed:', err);
+          logEl.innerText = '⚠️ Failed to upload file.';
+        });
+
+      } else if (pathInput) {
+        logEl.innerText = `Preview from: ${pathInput}\n\n[INFO] Simulated Vault start...\n[ERROR] Token renewal failed.`;
+        startFetchingLogs();
+        toggleBtn.disabled = false;
+      } else {
+        logEl.innerText = '❌ Please provide a valid log path or upload a file.';
+      }
+    }
+
+    function startFetchingLogs() {
+      const logEl = document.getElementById("log");
+      const errorEl = document.getElementById("errors");
+      const resolutionEl = document.getElementById("resolutions");
+
+      async function fetchLogs() {
+        try {
+          const logsResponse = await fetch("http://localhost:8000/logs?limit=100");
+          const logs = await logsResponse.json();
+
+          const isAtBottom = logEl.scrollTop + logEl.clientHeight >= logEl.scrollHeight - 50;
+          logEl.innerText = logs.join("\n");
+          if (isAtBottom) logEl.scrollTop = logEl.scrollHeight;
+
+          const errors = logs.filter(line =>
+            /error|failed|vault is sealed|revoked lease|unsealed|root generation initialized|invalid token|token expired|renewal failed|token valid|token revoke/i.test(line)
+          );
+
+          const resolutionsResponse = await fetch("http://localhost:8000/resolutions");
+          const resolutionsData = await resolutionsResponse.json();
+
+          errorEl.innerText = errors.length ? errors.join("\n") : "✅ No errors found";
+
+          const resolutions = errors.map(error => {
+            const match = resolutionsData.find(res => new RegExp(res.error, "i").test(error));
+            return match ? match.resolution : "→ Investigate this issue.";
+          });
+
+          resolutionEl.innerText = resolutions.length ? resolutions.join("\n") : "✅ No resolutions needed.";
+        } catch (err) {
+          console.error("Failed to fetch logs or resolutions", err);
+          logEl.innerText = "⚠️ Failed to fetch logs.";
+          errorEl.innerText = "";
+          resolutionEl.innerText = "";
+        }
+      }
+
+      if (intervalId) clearInterval(intervalId);
+      autoRefresh = true;
+      intervalId = setInterval(fetchLogs, 1000);
+    }
+
+    function toggleAutoRefresh() {
+      const toggleBtn = document.getElementById("toggleBtn");
+      if (autoRefresh) {
+        clearInterval(intervalId);
+        autoRefresh = false;
+        toggleBtn.innerText = "Resume Auto Refresh";
+      } else {
+        startFetchingLogs();
+        toggleBtn.innerText = "Pause Auto Refresh";
+      }
+    }
+  </script>
 </body>
 </html>
 
