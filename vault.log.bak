@@ -1,0 +1,167 @@
+==> Vault server configuration:
+
+             Api Address: http://127.0.0.1:8200
+                     Cgo: disabled
+         Cluster Address: https://127.0.0.1:8201
+              Go Version: go1.19.4
+              Listener 1: tcp (addr: "127.0.0.1:8200", cluster address: "127.0.0.1:8201", max_request_duration: "1m30s", max_request_size: "33554432", tls: "disabled")
+               Log Level: debug
+                   Mlock: supported: false, enabled: false
+           Recovery Mode: false
+                 Storage: inmem
+                 Version: Vault v1.12.2, built 2022-11-23T12:53:46Z
+             Version Sha: 415e1fe3118eebd5df6cb60d13defdc01aa17b03+CHANGES
+
+==> Vault server started! Log data will stream in below:
+
+2025-05-26T18:16:58.505+1000 [INFO]  proxy environment: http_proxy="" https_proxy="" no_proxy=""
+2025-05-26T18:16:58.505+1000 [WARN]  no `api_addr` value specified in config or in VAULT_API_ADDR; falling back to detection if possible, but this value should be manually set
+2025-05-26T18:16:58.506+1000 [DEBUG] core: set config: sanitized config="{\"api_addr\":\"\",\"cache_size\":0,\"cluster_addr\":\"\",\"cluster_cipher_suites\":\"\",\"cluster_name\":\"\",\"default_lease_ttl\":0,\"default_max_request_duration\":0,\"disable_cache\":false,\"disable_clustering\":false,\"disable_indexing\":false,\"disable_mlock\":true,\"disable_performance_standby\":false,\"disable_printable_check\":false,\"disable_sealwrap\":false,\"disable_sentinel_trace\":false,\"enable_response_header_hostname\":false,\"enable_response_header_raft_node_id\":false,\"enable_ui\":true,\"listeners\":[{\"config\":{\"address\":\"127.0.0.1:8200\",\"proxy_protocol_authorized_addrs\":\"127.0.0.1:8200\",\"proxy_protocol_behavior\":\"allow_authorized\",\"tls_disable\":true},\"type\":\"tcp\"}],\"log_format\":\"unspecified\",\"log_level\":\"\",\"log_requests_level\":\"\",\"max_lease_ttl\":0,\"pid_file\":\"\",\"plugin_directory\":\"\",\"plugin_file_permissions\":0,\"plugin_file_uid\":0,\"raw_storage_endpoint\":false,\"seals\":[{\"disabled\":false,\"type\":\"shamir\"}],\"storage\":{\"cluster_addr\":\"\",\"disable_clustering\":false,\"redirect_addr\":\"\",\"type\":\"inmem\"},\"telemetry\":{\"add_lease_metrics_namespace_labels\":false,\"circonus_api_app\":\"\",\"circonus_api_token\":\"\",\"circonus_api_url\":\"\",\"circonus_broker_id\":\"\",\"circonus_broker_select_tag\":\"\",\"circonus_check_display_name\":\"\",\"circonus_check_force_metric_activation\":\"\",\"circonus_check_id\":\"\",\"circonus_check_instance_id\":\"\",\"circonus_check_search_tag\":\"\",\"circonus_check_tags\":\"\",\"circonus_submission_interval\":\"\",\"circonus_submission_url\":\"\",\"disable_hostname\":true,\"dogstatsd_addr\":\"\",\"dogstatsd_tags\":null,\"lease_metrics_epsilon\":3600000000000,\"maximum_gauge_cardinality\":500,\"metrics_prefix\":\"\",\"num_lease_metrics_buckets\":168,\"prometheus_retention_time\":86400000000000,\"stackdriver_debug_logs\":false,\"stackdriver_location\":\"\",\"stackdriver_namespace\":\"\",\"stackdriver_project_id\":\"\",\"statsd_address\":\"\",\"statsite_address\":\"\",\"usage_gauge_period\":600000000000}}"
+2025-05-26T18:16:58.506+1000 [DEBUG] storage.cache: creating LRU cache: size=0
+2025-05-26T18:16:58.506+1000 [INFO]  core: Initializing version history cache for core
+2025-05-26T18:16:58.506+1000 [DEBUG] cluster listener addresses synthesized: cluster_addresses=[127.0.0.1:8201]
+2025-05-26T18:16:58.506+1000 [INFO]  core: security barrier not initialized
+2025-05-26T18:16:58.506+1000 [INFO]  core: security barrier initialized: stored=1 shares=1 threshold=1
+2025-05-26T18:16:58.507+1000 [DEBUG] core: cluster name not found/set, generating new
+2025-05-26T18:16:58.507+1000 [DEBUG] core: cluster name set: name=vault-cluster-ed1efd8e
+2025-05-26T18:16:58.507+1000 [DEBUG] core: cluster ID not found, generating new
+2025-05-26T18:16:58.507+1000 [DEBUG] core: cluster ID set: id=330eb98d-0376-2e20-8a6b-e674c279d63e
+2025-05-26T18:16:58.507+1000 [INFO]  core: post-unseal setup starting
+2025-05-26T18:16:58.507+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:16:58.507+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:16:58.507+1000 [DEBUG] core: persisting feature flags
+2025-05-26T18:16:58.514+1000 [INFO]  core: loaded wrapping token key
+2025-05-26T18:16:58.514+1000 [INFO]  core: Recorded vault version: vault version=1.12.2 upgrade time="2025-05-26 08:16:58.514007 +0000 UTC" build date=2022-11-23T12:53:46Z
+2025-05-26T18:16:58.514+1000 [INFO]  core: successfully setup plugin catalog: plugin-directory=""
+2025-05-26T18:16:58.514+1000 [INFO]  core: no mounts; adding default mount table
+2025-05-26T18:16:58.514+1000 [INFO]  core: successfully mounted backend: type=cubbyhole version="" path=cubbyhole/
+2025-05-26T18:16:58.514+1000 [INFO]  core: successfully mounted backend: type=system version="" path=sys/
+2025-05-26T18:16:58.515+1000 [INFO]  core: successfully mounted backend: type=identity version="" path=identity/
+2025-05-26T18:16:58.516+1000 [INFO]  core: successfully enabled credential backend: type=token version="" path=token/ namespace="ID: root. Path: "
+2025-05-26T18:16:58.516+1000 [INFO]  rollback: starting rollback manager
+2025-05-26T18:16:58.516+1000 [INFO]  core: restoring leases
+2025-05-26T18:16:58.516+1000 [DEBUG] identity: loading entities
+2025-05-26T18:16:58.516+1000 [DEBUG] identity: entities collected: num_existing=0
+2025-05-26T18:16:58.516+1000 [DEBUG] expiration: collecting leases
+2025-05-26T18:16:58.516+1000 [DEBUG] expiration: leases collected: num_existing=0
+2025-05-26T18:16:58.516+1000 [INFO]  identity: entities restored
+2025-05-26T18:16:58.517+1000 [DEBUG] identity: identity loading groups
+2025-05-26T18:16:58.517+1000 [DEBUG] identity: groups collected: num_existing=0
+2025-05-26T18:16:58.517+1000 [INFO]  identity: groups restored
+2025-05-26T18:16:58.517+1000 [DEBUG] identity: identity loading OIDC clients
+2025-05-26T18:16:58.517+1000 [DEBUG] secrets.identity.identity_ddbd820b: wrote OIDC default provider
+2025-05-26T18:16:58.517+1000 [INFO]  expiration: lease restore complete
+2025-05-26T18:16:58.614+1000 [DEBUG] secrets.identity.identity_ddbd820b: generated OIDC public key to sign JWTs: key_id=e0e72ce8-4fea-1c7b-f028-c834a5b32d0b
+2025-05-26T18:16:58.750+1000 [DEBUG] secrets.identity.identity_ddbd820b: generated OIDC public key for future use: key_id=e7bc21e2-7bfe-802c-519b-548f1181b770
+2025-05-26T18:16:58.750+1000 [DEBUG] secrets.identity.identity_ddbd820b: wrote OIDC default key
+2025-05-26T18:16:58.750+1000 [DEBUG] secrets.identity.identity_ddbd820b: wrote OIDC allow_all assignment
+2025-05-26T18:16:58.750+1000 [INFO]  core: post-unseal setup complete
+2025-05-26T18:16:58.750+1000 [DEBUG] token: no wal state found when generating token
+2025-05-26T18:16:58.750+1000 [INFO]  core: root token generated
+2025-05-26T18:16:58.750+1000 [INFO]  core: pre-seal teardown starting
+2025-05-26T18:16:58.750+1000 [DEBUG] expiration: stop triggered
+2025-05-26T18:16:58.750+1000 [DEBUG] expiration: finished stopping
+2025-05-26T18:16:58.750+1000 [INFO]  rollback: stopping rollback manager
+2025-05-26T18:16:58.750+1000 [INFO]  core: pre-seal teardown complete
+2025-05-26T18:16:58.750+1000 [DEBUG] core: unseal key supplied: migrate=false
+2025-05-26T18:16:58.750+1000 [DEBUG] core: starting cluster listeners
+2025-05-26T18:16:58.750+1000 [INFO]  core.cluster-listener.tcp: starting listener: listener_address=127.0.0.1:8201
+2025-05-26T18:16:58.751+1000 [INFO]  core.cluster-listener: serving cluster requests: cluster_listen_address=127.0.0.1:8201
+2025-05-26T18:16:58.751+1000 [INFO]  core: post-unseal setup starting
+2025-05-26T18:16:58.751+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:16:58.751+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:16:58.751+1000 [DEBUG] core: persisting feature flags
+2025-05-26T18:16:58.751+1000 [INFO]  core: loaded wrapping token key
+2025-05-26T18:16:58.751+1000 [INFO]  core: successfully setup plugin catalog: plugin-directory=""
+2025-05-26T18:16:58.751+1000 [INFO]  core: successfully mounted backend: type=system version="" path=sys/
+2025-05-26T18:16:58.751+1000 [INFO]  core: successfully mounted backend: type=identity version="" path=identity/
+2025-05-26T18:16:58.751+1000 [INFO]  core: successfully mounted backend: type=cubbyhole version="" path=cubbyhole/
+2025-05-26T18:16:58.753+1000 [INFO]  core: successfully enabled credential backend: type=token version="" path=token/ namespace="ID: root. Path: "
+2025-05-26T18:16:58.753+1000 [INFO]  rollback: starting rollback manager
+2025-05-26T18:16:58.753+1000 [INFO]  core: restoring leases
+2025-05-26T18:16:58.753+1000 [DEBUG] identity: loading entities
+2025-05-26T18:16:58.753+1000 [DEBUG] identity: entities collected: num_existing=0
+2025-05-26T18:16:58.754+1000 [DEBUG] expiration: collecting leases
+2025-05-26T18:16:58.754+1000 [DEBUG] expiration: leases collected: num_existing=0
+2025-05-26T18:16:58.754+1000 [INFO]  identity: entities restored
+2025-05-26T18:16:58.754+1000 [DEBUG] identity: identity loading groups
+2025-05-26T18:16:58.754+1000 [DEBUG] identity: groups collected: num_existing=0
+2025-05-26T18:16:58.754+1000 [INFO]  identity: groups restored
+2025-05-26T18:16:58.754+1000 [DEBUG] identity: identity loading OIDC clients
+2025-05-26T18:16:58.754+1000 [INFO]  expiration: lease restore complete
+2025-05-26T18:16:58.754+1000 [DEBUG] core: request forwarding setup function
+2025-05-26T18:16:58.754+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:16:58.754+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:16:58.754+1000 [DEBUG] core: request forwarding not setup
+2025-05-26T18:16:58.754+1000 [DEBUG] core: leaving request forwarding setup function
+2025-05-26T18:16:58.754+1000 [INFO]  core: post-unseal setup complete
+2025-05-26T18:16:58.754+1000 [INFO]  core: vault is unsealed
+2025-05-26T18:16:58.755+1000 [INFO]  core: successful mount: namespace="" path=secret/ type=kv version=""
+2025-05-26T18:16:58.755+1000 [DEBUG] would have sent systemd notification (systemd not present): notification=READY=1
+2025-05-26T18:16:58.766+1000 [INFO]  secrets.kv.kv_2bfa09e7: collecting keys to upgrade
+2025-05-26T18:16:58.766+1000 [INFO]  secrets.kv.kv_2bfa09e7: done collecting keys: num_keys=1
+2025-05-26T18:16:58.766+1000 [DEBUG] secrets.kv.kv_2bfa09e7: upgrading keys: progress=0/1
+2025-05-26T18:16:58.766+1000 [INFO]  secrets.kv.kv_2bfa09e7: upgrading keys finished
+WARNING! dev mode is enabled! In this mode, Vault runs entirely in-memory
+and starts unsealed with a single unseal key. The root token is already
+authenticated to the CLI, so you can immediately begin using Vault.
+
+You may need to set the following environment variables:
+
+    $ export VAULT_ADDR='http://127.0.0.1:8200'
+
+The unseal key and root token are displayed below in case you want to
+seal/unseal the Vault or re-authenticate.
+
+
+
+Development mode should NOT be used in production installations!
+
+2025-05-26T18:17:54.879+1000 [INFO]  core: marked as sealed
+2025-05-26T18:17:54.879+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:17:54.879+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:17:54.879+1000 [INFO]  core: pre-seal teardown starting
+2025-05-26T18:17:54.879+1000 [DEBUG] expiration: stop triggered
+2025-05-26T18:17:54.879+1000 [DEBUG] expiration: finished stopping
+2025-05-26T18:17:54.879+1000 [INFO]  rollback: stopping rollback manager
+2025-05-26T18:17:54.879+1000 [INFO]  core: pre-seal teardown complete
+2025-05-26T18:17:54.879+1000 [INFO]  core: stopping cluster listeners
+2025-05-26T18:17:54.879+1000 [INFO]  core.cluster-listener: forwarding rpc listeners stopped
+2025-05-26T18:17:55.349+1000 [INFO]  core.cluster-listener: rpc listeners successfully shut down
+2025-05-26T18:17:55.349+1000 [INFO]  core: cluster listeners successfully shut down
+2025-05-26T18:17:55.349+1000 [DEBUG] core: sealing barrier
+2025-05-26T18:17:55.349+1000 [INFO]  core: vault is sealed
+2025-05-26T18:18:49.155+1000 [DEBUG] core: unseal key supplied: migrate=false
+2025-05-26T18:18:49.155+1000 [DEBUG] core: starting cluster listeners
+2025-05-26T18:18:49.155+1000 [INFO]  core.cluster-listener.tcp: starting listener: listener_address=127.0.0.1:8201
+2025-05-26T18:18:49.155+1000 [INFO]  core.cluster-listener: serving cluster requests: cluster_listen_address=127.0.0.1:8201
+2025-05-26T18:18:49.155+1000 [INFO]  core: post-unseal setup starting
+2025-05-26T18:18:49.155+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:18:49.155+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:18:49.155+1000 [DEBUG] core: persisting feature flags
+2025-05-26T18:18:49.156+1000 [INFO]  core: loaded wrapping token key
+2025-05-26T18:18:49.156+1000 [INFO]  core: successfully setup plugin catalog: plugin-directory=""
+2025-05-26T18:18:49.156+1000 [INFO]  core: successfully mounted backend: type=system version="" path=sys/
+2025-05-26T18:18:49.157+1000 [INFO]  core: successfully mounted backend: type=identity version="" path=identity/
+2025-05-26T18:18:49.157+1000 [INFO]  core: successfully mounted backend: type=kv version="" path=secret/
+2025-05-26T18:18:49.157+1000 [INFO]  core: successfully mounted backend: type=cubbyhole version="" path=cubbyhole/
+2025-05-26T18:18:49.157+1000 [INFO]  core: successfully enabled credential backend: type=token version="" path=token/ namespace="ID: root. Path: "
+2025-05-26T18:18:49.157+1000 [INFO]  rollback: starting rollback manager
+2025-05-26T18:18:49.157+1000 [INFO]  core: restoring leases
+2025-05-26T18:18:49.157+1000 [DEBUG] identity: loading entities
+2025-05-26T18:18:49.157+1000 [DEBUG] identity: entities collected: num_existing=0
+2025-05-26T18:18:49.158+1000 [DEBUG] expiration: collecting leases
+2025-05-26T18:18:49.158+1000 [INFO]  identity: entities restored
+2025-05-26T18:18:49.158+1000 [DEBUG] identity: identity loading groups
+2025-05-26T18:18:49.158+1000 [DEBUG] identity: groups collected: num_existing=0
+2025-05-26T18:18:49.158+1000 [INFO]  identity: groups restored
+2025-05-26T18:18:49.158+1000 [DEBUG] identity: identity loading OIDC clients
+2025-05-26T18:18:49.158+1000 [DEBUG] expiration: leases collected: num_existing=0
+2025-05-26T18:18:49.158+1000 [DEBUG] core: request forwarding setup function
+2025-05-26T18:18:49.158+1000 [DEBUG] core: clearing forwarding clients
+2025-05-26T18:18:49.158+1000 [DEBUG] core: done clearing forwarding clients
+2025-05-26T18:18:49.158+1000 [DEBUG] core: request forwarding not setup
+2025-05-26T18:18:49.158+1000 [DEBUG] core: leaving request forwarding setup function
+2025-05-26T18:18:49.158+1000 [INFO]  core: post-unseal setup complete
+2025-05-26T18:18:49.158+1000 [INFO]  core: vault is unsealed
+2025-05-26T18:18:49.158+1000 [INFO]  expiration: lease restore complete
